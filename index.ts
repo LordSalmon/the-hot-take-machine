@@ -49,7 +49,6 @@ function wrapWithTitle(title: string, content: string) {
   return (
     fillLine("=") +
     titleWhitespaceBefore +
-    fillLine() +
     title +
     titleWhitespaceAfter +
     fillLine() +
