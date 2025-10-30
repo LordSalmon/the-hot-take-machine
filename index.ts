@@ -27,17 +27,17 @@ type Comment = {
 };
 
 async function print(msg: string) {
-  // console.log(msg);
-  // console.log();
-  // console.log();
-  // console.log();
-  // console.log();
-  await $`echo "${msg}" | lp -d ${Bun.env.PRINTER}`;
+  console.log(msg);
+  console.log();
+  console.log();
+  console.log();
+  console.log();
+  // await $`echo "${msg}" | lp -d ${Bun.env.PRINTER}`;
 }
 
 async function getPrComments() {
   return (
-    await $`gh pr list --repo ${repo} --assignee "@me" --json comments`
+    await $`gh pr list --repo ${repo} --assignee "@me" --json comments --state open`
   ).json() as Array<PullRequest>;
 }
 
@@ -109,6 +109,7 @@ prs
     return a.comment.createdAt > b.comment.createdAt ? 1 : -1;
   })
   .filter((c) => c.comment.body !== undefined)
+  .filter((c) => c.comment.createdAt > "2025-10-00T00:00:00Z")
   .forEach((c) => {
     printPrComment(c.prTitle, c.created, c.comment);
   });
