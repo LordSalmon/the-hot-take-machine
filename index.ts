@@ -21,6 +21,11 @@ type Comment = {
 };
 
 async function print(msg: string) {
+  // console.log(msg);
+  // console.log();
+  // console.log();
+  // console.log();
+  // console.log();
   await $`echo "${msg}" | lp -d ${Bun.env.PRINTER}`;
 }
 
@@ -35,16 +40,16 @@ async function printPrComment(comment: Comment) {
 }
 
 function wrapWithTitle(title: string, content: string) {
-  const titleSection = "=".repeat(LINE_WIDTH);
   const titleWhitespaceBefore = " ".repeat(
-    Math.floor((LINE_WIDTH - title.length) / 2),
+    Math.floor(Math.max(LINE_WIDTH - title.length, 0) / 2),
   );
   const titleWhitespaceAfter = " ".repeat(
-    LINE_WIDTH - titleWhitespaceBefore.length - title.length,
+    Math.max(LINE_WIDTH - titleWhitespaceBefore.length - title.length, 0),
   );
   return (
-    titleSection +
+    fillLine("=") +
     titleWhitespaceBefore +
+    fillLine() +
     title +
     titleWhitespaceAfter +
     fillLine() +
@@ -64,6 +69,7 @@ prs
   .flatMap((pr) => {
     return pr.comments;
   })
+  .slice(0, 2)
   .forEach((c) => {
     printPrComment(c);
   });
