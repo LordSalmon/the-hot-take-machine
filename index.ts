@@ -25,10 +25,9 @@ async function print(msg: string) {
 }
 
 async function getPrComments() {
-  const prs: Array<{ comments: [] }> = (
+  return (
     await $`gh pr list --repo ${repo} --assignee "@me" --json comments`
-  ).json();
-  console.log(prs);
+  ).json() as Array<{ comments: Array<Comment> }>;
 }
 
 async function printPrComment(comment: Comment) {
@@ -60,4 +59,11 @@ function fillLine(filler = " ") {
   return filler.repeat(LINE_WIDTH);
 }
 
-await getPrComments();
+const prs = await getPrComments();
+prs
+  .flatMap((pr) => {
+    return pr.comments;
+  })
+  .forEach((c) => {
+    printPrComment(c);
+  });
