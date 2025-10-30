@@ -1,13 +1,63 @@
-import {$} from 'bun';
+import { $ } from "bun";
 
 const repo = Bun.env.GH_REPO;
+const LINE_WIDTH = 28;
+
+type Author = {
+  login: string;
+};
+
+type Comment = {
+  id: string;
+  author: Author;
+  authorAssociation: string;
+  body: string;
+  createdAt: string;
+  includesCreatedEdit: boolean;
+  isMinimized: boolean;
+  minimizedReason: string;
+  url: string;
+  viewerDidAuthor: boolean;
+};
 
 async function print(msg: string) {
-  await $`echo "${msg}" | lp -d ${Bun.env.PRINTER}`
+  await $`echo "${msg}" | lp -d ${Bun.env.PRINTER}`;
 }
 
 async function getPrComments() {
-  const prs: Array<{comments: []}> = JSON.parse(await $`gh pr list --repo ${repo} --assignee "@me" --json`);
-  
-  
+  const prs: Array<{ comments: [] }> = (
+    await $`gh pr list --repo ${repo} --assignee "@me" --json comments`
+  ).json();
+  console.log(prs);
 }
+
+async function printPrComment(comment: Comment) {
+  await print(wrapWithTitle(comment.body, "Pull Request Comment"));
+}
+
+function wrapWithTitle(title: string, content: string) {
+  const titleSection = "=".repeat(LINE_WIDTH);
+  const titleWhitespaceBefore = " ".repeat(
+    Math.floor((LINE_WIDTH - title.length) / 2),
+  );
+  const titleWhitespaceAfter = " ".repeat(
+    LINE_WIDTH - titleWhitespaceBefore.length - title.length,
+  );
+  return (
+    titleSection +
+    titleWhitespaceBefore +
+    title +
+    titleWhitespaceAfter +
+    fillLine() +
+    content +
+    fillLine() +
+    fillLine("=")
+  );
+  content;
+}
+
+function fillLine(filler = " ") {
+  return filler.repeat(LINE_WIDTH);
+}
+
+await getPrComments();
