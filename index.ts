@@ -27,12 +27,12 @@ type Comment = {
 };
 
 async function print(msg: string) {
-  console.log(msg);
-  console.log();
-  console.log();
-  console.log();
-  console.log();
-  // await $`echo "${msg}" | lp -d ${Bun.env.PRINTER}`;
+  // console.log(msg);
+  // console.log();
+  // console.log();
+  // console.log();
+  // console.log();
+  await $`echo "${msg}" | lp -d ${Bun.env.PRINTER}`;
 }
 
 async function getPrComments() {
